@@ -2,6 +2,7 @@ package com.example.whatsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -39,34 +40,42 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch(v.getId()){
-            case R.id.btnLogInLogIn:
-                {
-                    ParseUser.logInInBackground(edtEmailLogIn.getText().toString(),
-                            edtPasswordLogIn.getText().toString(),
-                            new LogInCallback() {
-                        @Override
-                        public void done(ParseUser user, ParseException e) {
-                            if ( user != null && e == null) {
-                                FancyToast.makeText(LogIn.this,
-                                        ParseUser.getCurrentUser().getUsername() + " is loged in",
-                                        Toast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+            case R.id.btnLogInLogIn:{
 
+                final ProgressDialog dialog  = new ProgressDialog(this);
+                dialog.setMessage("Loading...");
+                dialog.show();
+                if (edtEmailLogIn.getText().toString().equals("") || edtPasswordLogIn.getText().toString().equals("")){
+                    FancyToast.makeText
+                            (LogIn.this,"Email, Password is requierd!",
+                                    FancyToast.LENGTH_SHORT,FancyToast.INFO,true).show();
+                }
+                ParseUser.logInInBackground(edtEmailLogIn.getText().toString(),
+                        edtPasswordLogIn.getText().toString(), new LogInCallback() {
+                            @Override
+                            public void done(ParseUser user, ParseException e) {
+                                if (user != null && e == null) {
+                                    FancyToast.makeText(LogIn.this, user.getUsername()
+                                            + " is loged in", FancyToast.LENGTH_LONG, FancyToast.SUCCESS, true).show();
+                                    Intent intent = new Intent(LogIn.this,WhatsAppUsers.class);
+                                    startActivity(intent);
+                                    finish();
 
-                            }else {
-                                FancyToast.makeText(LogIn.this,
-                                        e.getMessage(),Toast.LENGTH_SHORT,
-                                        FancyToast.ERROR,true).show();
+                                } else {
+                                    FancyToast.makeText(LogIn.this, e.getMessage(), FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
+
+                                }
+                                dialog.dismiss();
+
                             }
-
-                        }
-                    });
+                        });
                     break;
-
-            }
-            case R.id.btnSignUpLogIn:
+                }
+            case R.id.btnSignUpLogIn:{
                 Intent intent = new Intent(LogIn.this,MainActivity.class);
                 startActivity(intent);
+                finish();
         }
 
     }
-}
+}}

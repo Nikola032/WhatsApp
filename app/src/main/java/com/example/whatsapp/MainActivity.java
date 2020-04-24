@@ -2,6 +2,7 @@ package com.example.whatsapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -42,22 +43,30 @@ public class MainActivity extends AppCompatActivity {
                 appUser.setUsername(edtUserName.getText().toString());
                 appUser.setPassword(edtPassword.getText().toString());
 
+                final ProgressDialog dialog  = new ProgressDialog(MainActivity.this);
+                dialog.setMessage("Loading...");
+                dialog.show();
+
+
+
+
                 appUser.signUpInBackground(new SignUpCallback() {
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
-                            FancyToast.makeText(MainActivity.this,"you are signed up", Toast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
-                            Intent intent = new Intent(MainActivity.this, LogIn.class);
+                            FancyToast.makeText(MainActivity.this, "you are signed up", Toast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
+                            Intent intent = new Intent(MainActivity.this, WhatsAppUsers.class);
                             startActivity(intent);
 
-                        }else {
-                            FancyToast.makeText(MainActivity.this,e.getMessage(),Toast.LENGTH_SHORT,FancyToast.ERROR,true).show();
+
+
+
+                        } else {
+                            FancyToast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT, FancyToast.ERROR, true).show();
                         }
+                        dialog.dismiss();
                     }
                 });
-
-
-
             }
         });
         btnLogIn.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,LogIn.class);
                 startActivity(intent);
+                finish();
             }
         });
 
